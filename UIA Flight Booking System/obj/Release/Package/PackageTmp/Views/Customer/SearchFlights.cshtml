@@ -1,0 +1,83 @@
+﻿@using UIA_Flight_Booking_System.ViewModels
+@model SearchFlightsViewModel
+
+@{
+    ViewBag.Title = "Search Flights";
+}
+
+<link rel="stylesheet" href="~/Content/themes/base/jquery-ui.min.css">
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+<br />
+
+@using (Html.BeginForm("SearchFlights", "Customer", FormMethod.Get))
+{
+    <div class="container">
+        <div class="row">
+            <div class="table">
+                <div class="col-md-3">
+                    @Html.DropDownListFor(model => model.fromCountry, new SelectList(Enum.GetValues(typeof(Country))), "Departure Country", new { @class = "form-control", id = "ddlFromCountry", Value = Model.fromCountry })
+                </div>
+
+                <div class="col-md-3">
+                    @Html.DropDownListFor(model => model.toCountry, new SelectList(Enum.GetValues(typeof(Country))), "Destination Country", new { @class = "form-control", id = "ddlToCountry", Value = Model.toCountry })
+                </div>
+
+                <div class="col-md-3" style="padding-left:0px;">
+                    @Html.TextBoxFor(model => model.departureDate, htmlAttributes: new { @class = "form-control", id = "departureDate", placeholder = "Departure Date" })
+                </div>
+                <div class="col-md-1">
+                    <input type="submit" class="btn btn-primary" value="Search" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    if (Model.flightList.Count != 0)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="panel panel-primary filterable">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Flights</h3>
+                    </div>
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Departure Date & Time</th>
+                                <th>Arrival Date & Time</th>
+                            </tr>
+                            @foreach (var item in Model.flightList)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.DepartureVenue)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.DestinationVenue)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.DepartureDateTime)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ArrivalDateTime)</td>
+                                    <td>@Html.ActionLink("Book Flight", "FlightBooking", new { flightID = item.FlightID })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}
+<script>
+    $.noConflict();
+    jQuery(document).ready(function ($) {
+        $("#departureDate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "2017:2020",
+            dateFormat: 'yy-mm-dd',
+            defaultDate: new Date()
+        });
+    });
+</script>

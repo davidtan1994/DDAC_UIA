@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="UIAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Aircraft_Detail">
+    <Key>
+      <PropertyRef Name="AircraftID" />
+    </Key>
+    <Property Name="AircraftID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AircraftCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="AircraftType" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="MaxCapacity" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Booking_Detail">
+    <Key>
+      <PropertyRef Name="BookingID" />
+    </Key>
+    <Property Name="BookingID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FlightID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="BookedByCustomerID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Amount" Type="money" Nullable="false" />
+    <Property Name="BookingDateTime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Fname" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Lname" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="ContactNum" Type="nchar" MaxLength="20" Nullable="false" />
+    <Property Name="IcNum" Type="nchar" MaxLength="20" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="DOB" Type="date" Nullable="false" />
+    <Property Name="RegistrationDate" Type="date" Nullable="false" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Flight_Detail">
+    <Key>
+      <PropertyRef Name="FlightID" />
+    </Key>
+    <Property Name="FlightID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AircraftID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="DepartureVenue" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="DestinationVenue" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="DepartureDateTime" Type="datetime" Nullable="false" />
+    <Property Name="ArrivalDateTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Passenger">
+    <Key>
+      <PropertyRef Name="PassengerID" />
+    </Key>
+    <Property Name="PassengerID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="Gender" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="DOB" Type="date" Nullable="false" />
+    <Property Name="Nationality" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="TicketID" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Pricing">
+    <Key>
+      <PropertyRef Name="PriceID" />
+    </Key>
+    <Property Name="PriceID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FlightID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AgeCategory" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="ClassCategory" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="Price" Type="money" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Seat_Detail">
+    <Key>
+      <PropertyRef Name="TicketID" />
+    </Key>
+    <Property Name="TicketID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="BookingID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SeatID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Username" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Role" Type="varchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'UIA.dbo.BookingDetails_VM' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="BookingDetails_VM">
+    <Key>
+      <PropertyRef Name="TicketID" />
+    </Key>
+    <Property Name="BookingID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FlightID" Type="uniqueidentifier" />
+    <Property Name="Departure Time" Type="time" Precision="7" />
+    <Property Name="Departure Date" Type="date" />
+    <Property Name="DepartureVenue" Type="varchar" MaxLength="100" />
+    <Property Name="DestinationVenue" Type="varchar" MaxLength="100" />
+    <Property Name="SeatID" Type="int" />
+    <Property Name="TicketID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'UIA.dbo.BookingList_VM' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="BookingList_VM">
+    <Key>
+      <PropertyRef Name="BookedByCustomerID" />
+      <PropertyRef Name="FlightID" />
+      <PropertyRef Name="BookingID" />
+      <PropertyRef Name="Amount" />
+    </Key>
+    <Property Name="BookedByCustomerID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FlightID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="BookingID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Amount" Type="money" Nullable="false" />
+    <Property Name="BookingDateTime" Type="datetime" />
+    <Property Name="DepartureVenue" Type="varchar" MaxLength="100" />
+    <Property Name="DestinationVenue" Type="varchar" MaxLength="100" />
+    <Property Name="DepartureDateTime" Type="datetime" />
+    <Property Name="ArrivalDateTime" Type="datetime" />
+    <Property Name="Number of Ticket" Type="int" />
+  </EntityType>
+  <Association Name="FK_Booking_Detail_Customer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Booking_Detail" Type="Self.Booking_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Booking_Detail">
+        <PropertyRef Name="BookedByCustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Booking_Detail_Flight_Detail">
+    <End Role="Flight_Detail" Type="Self.Flight_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Booking_Detail" Type="Self.Booking_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Flight_Detail">
+        <PropertyRef Name="FlightID" />
+      </Principal>
+      <Dependent Role="Booking_Detail">
+        <PropertyRef Name="FlightID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Customer_User">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Flight_Detail_Aircraft_Detail">
+    <End Role="Aircraft_Detail" Type="Self.Aircraft_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Flight_Detail" Type="Self.Flight_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Aircraft_Detail">
+        <PropertyRef Name="AircraftID" />
+      </Principal>
+      <Dependent Role="Flight_Detail">
+        <PropertyRef Name="AircraftID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Passenger_Seat_Detail">
+    <End Role="Seat_Detail" Type="Self.Seat_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Passenger" Type="Self.Passenger" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Seat_Detail">
+        <PropertyRef Name="TicketID" />
+      </Principal>
+      <Dependent Role="Passenger">
+        <PropertyRef Name="TicketID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pricing_Flight_Detail">
+    <End Role="Flight_Detail" Type="Self.Flight_Detail" Multiplicity="1" />
+    <End Role="Pricing" Type="Self.Pricing" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Flight_Detail">
+        <PropertyRef Name="FlightID" />
+      </Principal>
+      <Dependent Role="Pricing">
+        <PropertyRef Name="FlightID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Seat_Detail_Booking_Detail1">
+    <End Role="Booking_Detail" Type="Self.Booking_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Seat_Detail" Type="Self.Seat_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Booking_Detail">
+        <PropertyRef Name="BookingID" />
+      </Principal>
+      <Dependent Role="Seat_Detail">
+        <PropertyRef Name="BookingID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="UIAModelStoreContainer">
+    <EntitySet Name="Aircraft_Detail" EntityType="Self.Aircraft_Detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Booking_Detail" EntityType="Self.Booking_Detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Flight_Detail" EntityType="Self.Flight_Detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Passenger" EntityType="Self.Passenger" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pricing" EntityType="Self.Pricing" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Seat_Detail" EntityType="Self.Seat_Detail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BookingDetails_VM" EntityType="Self.BookingDetails_VM" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [BookingDetails_VM].[BookingID] AS [BookingID], 
+    [BookingDetails_VM].[FlightID] AS [FlightID], 
+    [BookingDetails_VM].[Departure Time] AS [Departure Time], 
+    [BookingDetails_VM].[Departure Date] AS [Departure Date], 
+    [BookingDetails_VM].[DepartureVenue] AS [DepartureVenue], 
+    [BookingDetails_VM].[DestinationVenue] AS [DestinationVenue], 
+    [BookingDetails_VM].[SeatID] AS [SeatID], 
+    [BookingDetails_VM].[TicketID] AS [TicketID], 
+    [BookingDetails_VM].[Name] AS [Name]
+    FROM [dbo].[BookingDetails_VM] AS [BookingDetails_VM]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="BookingList_VM" EntityType="Self.BookingList_VM" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [BookingList_VM].[BookedByCustomerID] AS [BookedByCustomerID], 
+    [BookingList_VM].[FlightID] AS [FlightID], 
+    [BookingList_VM].[BookingID] AS [BookingID], 
+    [BookingList_VM].[Amount] AS [Amount], 
+    [BookingList_VM].[BookingDateTime] AS [BookingDateTime], 
+    [BookingList_VM].[DepartureVenue] AS [DepartureVenue], 
+    [BookingList_VM].[DestinationVenue] AS [DestinationVenue], 
+    [BookingList_VM].[DepartureDateTime] AS [DepartureDateTime], 
+    [BookingList_VM].[ArrivalDateTime] AS [ArrivalDateTime], 
+    [BookingList_VM].[Number of Ticket] AS [Number of Ticket]
+    FROM [dbo].[BookingList_VM] AS [BookingList_VM]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_Booking_Detail_Customer" Association="Self.FK_Booking_Detail_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Booking_Detail_Flight_Detail" Association="Self.FK_Booking_Detail_Flight_Detail">
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Customer_User" Association="Self.FK_Customer_User">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Customer" EntitySet="Customer" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Flight_Detail_Aircraft_Detail" Association="Self.FK_Flight_Detail_Aircraft_Detail">
+      <End Role="Aircraft_Detail" EntitySet="Aircraft_Detail" />
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Passenger_Seat_Detail" Association="Self.FK_Passenger_Seat_Detail">
+      <End Role="Seat_Detail" EntitySet="Seat_Detail" />
+      <End Role="Passenger" EntitySet="Passenger" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pricing_Flight_Detail" Association="Self.FK_Pricing_Flight_Detail">
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+      <End Role="Pricing" EntitySet="Pricing" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Seat_Detail_Booking_Detail1" Association="Self.FK_Seat_Detail_Booking_Detail1">
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+      <End Role="Seat_Detail" EntitySet="Seat_Detail" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

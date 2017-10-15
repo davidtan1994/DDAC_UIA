@@ -1,0 +1,50 @@
+﻿@model IEnumerable<UIA_Flight_Booking_System.Models.BookingDetails_VM>
+@{
+    ViewBag.Title = "View Reservation Detail";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/ViewReservationDetail.css">
+
+
+@foreach (var item in Model)
+{
+    <div class="ticket">
+        <div class="stub">
+            <div class="top">
+                <span class="admit">Ticket ID</span>
+                <span class="line"></span>
+                <span class="num">
+                    <span>@Html.DisplayFor(modelItem=>item.TicketID)</span>
+                </span>
+            </div>
+            <div class="number">@Html.DisplayFor(modelItem=>item.SeatID)</div>
+            <div class="invite">
+                @Html.DisplayFor(modelItem => item.Name)
+            </div>
+        </div>
+        <div class="check">
+            <div class="big">
+                Ukraine <br> International Airline
+            </div>
+            <div class="number"></div>
+            <div class="info">
+                <section>
+                    <div class="title">Departure Date</div>
+                    <div>@Html.DisplayFor(modelItem => item.Departure_Date)</div>
+                </section>
+                <section>
+                    <div class="title">Departure Time</div>
+                    <div>@Html.DisplayFor(modelItem => item.Departure_Time)</div>
+                </section>
+                <section>
+                    <div class="title">From</div>
+                    <div>@Html.DisplayFor(modelItem=>item.DepartureVenue)</div>
+                </section>
+                <section>
+                    <div class="title">To</div>
+                    <div>@Html.DisplayFor(modelItem => item.DestinationVenue)</div>
+                </section>
+            </div>
+        </div>
+    </div>
+}

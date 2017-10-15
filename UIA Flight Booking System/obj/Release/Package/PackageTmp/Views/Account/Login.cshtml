@@ -1,0 +1,35 @@
+﻿@model UIA_Flight_Booking_System.Models.User
+
+@{
+    ViewBag.Title = "Login";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/Login.css">
+
+@using (Html.BeginForm())
+{
+    <div id="login-modal">
+        <div class="modal-dialog">
+            <div class="loginmodal-container">
+                <h1>Login to Your Account</h1><br>
+
+                @Html.TextBoxFor(model => model.Username, htmlAttributes: new { name = "user", placeholder = "Username" })
+                @Html.PasswordFor(model => model.Password, htmlAttributes: new { name = "pass", placeholder = "Password" })
+
+                <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+
+                <div class="login-help">
+                    <a href=@Url.Action("CustomerRegistration","Account")>Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    if (TempData["LoginFail"] != null)
+    {
+        <script>
+            alert("Wrong username or password");
+        </script>
+    }
+}
+
+

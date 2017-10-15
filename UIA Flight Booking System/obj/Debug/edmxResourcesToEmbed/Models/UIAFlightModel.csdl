@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="UIAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <Property Name="Fname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Lname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ContactNum" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="IcNum" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Gender" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="User" Relationship="UIAModel.FK_Customer_User" FromRole="Customer" ToRole="User" />
+    <NavigationProperty Name="Booking_Detail" Relationship="UIAModel.FK_Booking_Detail_Customer" FromRole="Customer" ToRole="Booking_Detail" />
+  </EntityType>
+  <EntityContainer Name="UIAEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <FunctionImport Name="SP_SeatDetails_Insert">
+      <Parameter Name="BookingID" Mode="In" Type="Guid" />
+      <Parameter Name="SeatID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <EntitySet Name="Passengers" EntityType="UIAModel.Passenger" />
+    <EntitySet Name="Seat_Detail" EntityType="UIAModel.Seat_Detail" />
+    <AssociationSet Name="FK_Passenger_Seat_Detail" Association="UIAModel.FK_Passenger_Seat_Detail">
+      <End Role="Seat_Detail" EntitySet="Seat_Detail" />
+      <End Role="Passenger" EntitySet="Passengers" />
+    </AssociationSet>
+    <EntitySet Name="Users" EntityType="UIAModel.User" />
+    <AssociationSet Name="FK_Customer_User" Association="UIAModel.FK_Customer_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Customer" EntitySet="Customers" />
+    </AssociationSet>
+    <EntitySet Name="Aircraft_Detail" EntityType="UIAModel.Aircraft_Detail" />
+    <EntitySet Name="Flight_Detail" EntityType="UIAModel.Flight_Detail" />
+    <EntitySet Name="Pricings" EntityType="UIAModel.Pricing" />
+    <AssociationSet Name="FK_Flight_Detail_Aircraft_Detail" Association="UIAModel.FK_Flight_Detail_Aircraft_Detail">
+      <End Role="Aircraft_Detail" EntitySet="Aircraft_Detail" />
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pricing_Flight_Detail" Association="UIAModel.FK_Pricing_Flight_Detail">
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+      <End Role="Pricing" EntitySet="Pricings" />
+    </AssociationSet>
+    <EntitySet Name="Booking_Detail" EntityType="UIAModel.Booking_Detail" />
+    <AssociationSet Name="FK_Booking_Detail_Customer" Association="UIAModel.FK_Booking_Detail_Customer">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Booking_Detail_Flight_Detail" Association="UIAModel.FK_Booking_Detail_Flight_Detail">
+      <End Role="Flight_Detail" EntitySet="Flight_Detail" />
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Seat_Detail_Booking_Detail1" Association="UIAModel.FK_Seat_Detail_Booking_Detail1">
+      <End Role="Booking_Detail" EntitySet="Booking_Detail" />
+      <End Role="Seat_Detail" EntitySet="Seat_Detail" />
+    </AssociationSet>
+    <EntitySet Name="BookingList_VM" EntityType="UIAModel.BookingList_VM" />
+    <EntitySet Name="BookingDetails_VM" EntityType="UIAModel.BookingDetails_VM" />
+  </EntityContainer>
+  <EntityType Name="Passenger">
+    <Key>
+      <PropertyRef Name="PassengerID" />
+    </Key>
+    <Property Name="PassengerID" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Gender" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Nationality" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TicketID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Seat_Detail" Relationship="UIAModel.FK_Passenger_Seat_Detail" FromRole="Passenger" ToRole="Seat_Detail" />
+  </EntityType>
+  <EntityType Name="Seat_Detail">
+    <Key>
+      <PropertyRef Name="TicketID" />
+    </Key>
+    <Property Name="TicketID" Type="Guid" Nullable="false" />
+    <Property Name="BookingID" Type="Guid" Nullable="false" />
+    <Property Name="SeatID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Passengers" Relationship="UIAModel.FK_Passenger_Seat_Detail" FromRole="Seat_Detail" ToRole="Passenger" />
+    <NavigationProperty Name="Booking_Detail" Relationship="UIAModel.FK_Seat_Detail_Booking_Detail1" FromRole="Seat_Detail" ToRole="Booking_Detail" />
+  </EntityType>
+  <Association Name="FK_Passenger_Seat_Detail">
+    <End Type="UIAModel.Seat_Detail" Role="Seat_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="UIAModel.Passenger" Role="Passenger" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Seat_Detail">
+        <PropertyRef Name="TicketID" />
+      </Principal>
+      <Dependent Role="Passenger">
+        <PropertyRef Name="TicketID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Guid" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Role" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Customer" Relationship="UIAModel.FK_Customer_User" FromRole="User" ToRole="Customer" />
+  </EntityType>
+  <Association Name="FK_Customer_User">
+    <End Type="UIAModel.User" Role="User" Multiplicity="1" />
+    <End Type="UIAModel.Customer" Role="Customer" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Aircraft_Detail">
+    <Key>
+      <PropertyRef Name="AircraftID" />
+    </Key>
+    <Property Name="AircraftID" Type="Guid" Nullable="false" />
+    <Property Name="AircraftCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="AircraftType" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="MaxCapacity" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Flight_Detail" Relationship="UIAModel.FK_Flight_Detail_Aircraft_Detail" FromRole="Aircraft_Detail" ToRole="Flight_Detail" />
+  </EntityType>
+  <EntityType Name="Flight_Detail">
+    <Key>
+      <PropertyRef Name="FlightID" />
+    </Key>
+    <Property Name="FlightID" Type="Guid" Nullable="false" />
+    <Property Name="AircraftID" Type="Guid" Nullable="false" />
+    <Property Name="DepartureVenue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DestinationVenue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DepartureDateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ArrivalDateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Aircraft_Detail" Relationship="UIAModel.FK_Flight_Detail_Aircraft_Detail" FromRole="Flight_Detail" ToRole="Aircraft_Detail" />
+    <NavigationProperty Name="Pricings" Relationship="UIAModel.FK_Pricing_Flight_Detail" FromRole="Flight_Detail" ToRole="Pricing" />
+    <NavigationProperty Name="Booking_Detail" Relationship="UIAModel.FK_Booking_Detail_Flight_Detail" FromRole="Flight_Detail" ToRole="Booking_Detail" />
+  </EntityType>
+  <EntityType Name="Pricing">
+    <Key>
+      <PropertyRef Name="PriceID" />
+    </Key>
+    <Property Name="PriceID" Type="Guid" Nullable="false" />
+    <Property Name="FlightID" Type="Guid" Nullable="false" />
+    <Property Name="AgeCategory" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="ClassCategory" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="Price" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <NavigationProperty Name="Flight_Detail" Relationship="UIAModel.FK_Pricing_Flight_Detail" FromRole="Pricing" ToRole="Flight_Detail" />
+  </EntityType>
+  <Association Name="FK_Flight_Detail_Aircraft_Detail">
+    <End Type="UIAModel.Aircraft_Detail" Role="Aircraft_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="UIAModel.Flight_Detail" Role="Flight_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Aircraft_Detail">
+        <PropertyRef Name="AircraftID" />
+      </Principal>
+      <Dependent Role="Flight_Detail">
+        <PropertyRef Name="AircraftID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pricing_Flight_Detail">
+    <End Type="UIAModel.Flight_Detail" Role="Flight_Detail" Multiplicity="1" />
+    <End Type="UIAModel.Pricing" Role="Pricing" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Flight_Detail">
+        <PropertyRef Name="FlightID" />
+      </Principal>
+      <Dependent Role="Pricing">
+        <PropertyRef Name="FlightID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Booking_Detail">
+    <Key>
+      <PropertyRef Name="BookingID" />
+    </Key>
+    <Property Name="BookingID" Type="Guid" Nullable="false" />
+    <Property Name="FlightID" Type="Guid" Nullable="false" />
+    <Property Name="BookedByCustomerID" Type="Guid" Nullable="false" />
+    <Property Name="Amount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="BookingDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Customer" Relationship="UIAModel.FK_Booking_Detail_Customer" FromRole="Booking_Detail" ToRole="Customer" />
+    <NavigationProperty Name="Flight_Detail" Relationship="UIAModel.FK_Booking_Detail_Flight_Detail" FromRole="Booking_Detail" ToRole="Flight_Detail" />
+    <NavigationProperty Name="Seat_Detail" Relationship="UIAModel.FK_Seat_Detail_Booking_Detail1" FromRole="Booking_Detail" ToRole="Seat_Detail" />
+  </EntityType>
+  <Association Name="FK_Booking_Detail_Customer">
+    <End Type="UIAModel.Customer" Role="Customer" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="UIAModel.Booking_Detail" Role="Booking_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Booking_Detail">
+        <PropertyRef Name="BookedByCustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Booking_Detail_Flight_Detail">
+    <End Type="UIAModel.Flight_Detail" Role="Flight_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="UIAModel.Booking_Detail" Role="Booking_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Flight_Detail">
+        <PropertyRef Name="FlightID" />
+      </Principal>
+      <Dependent Role="Booking_Detail">
+        <PropertyRef Name="FlightID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Seat_Detail_Booking_Detail1">
+    <End Type="UIAModel.Booking_Detail" Role="Booking_Detail" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="UIAModel.Seat_Detail" Role="Seat_Detail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Booking_Detail">
+        <PropertyRef Name="BookingID" />
+      </Principal>
+      <Dependent Role="Seat_Detail">
+        <PropertyRef Name="BookingID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="BookingList_VM">
+    <Key>
+      <PropertyRef Name="BookedByCustomerID" />
+      <PropertyRef Name="FlightID" />
+      <PropertyRef Name="BookingID" />
+      <PropertyRef Name="Amount" />
+    </Key>
+    <Property Name="BookedByCustomerID" Type="Guid" Nullable="false" />
+    <Property Name="FlightID" Type="Guid" Nullable="false" />
+    <Property Name="BookingID" Type="Guid" Nullable="false" />
+    <Property Name="Amount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+    <Property Name="BookingDateTime" Type="DateTime" Precision="3" />
+    <Property Name="DepartureVenue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DestinationVenue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DepartureDateTime" Type="DateTime" Precision="3" />
+    <Property Name="ArrivalDateTime" Type="DateTime" Precision="3" />
+    <Property Name="Number_of_Ticket" Type="Int32" />
+  </EntityType>
+  <EntityType Name="BookingDetails_VM">
+    <Key>
+      <PropertyRef Name="TicketID" />
+    </Key>
+    <Property Name="BookingID" Type="Guid" Nullable="false" />
+    <Property Name="FlightID" Type="Guid" />
+    <Property Name="Departure_Time" Type="Time" Precision="7" />
+    <Property Name="Departure_Date" Type="DateTime" Precision="0" />
+    <Property Name="DepartureVenue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DestinationVenue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="SeatID" Type="Int32" />
+    <Property Name="TicketID" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+  </EntityType>
+</Schema>

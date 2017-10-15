@@ -1,0 +1,212 @@
+﻿@using UIA_Flight_Booking_System.ViewModels
+@model FlightBookingViewModel
+
+@{
+    ViewBag.Title = "Flight Booking";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/FlightBooking.css">
+<link rel="stylesheet" href="~/Content/themes/base/jquery-ui.min.css">
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+<script src="~/Scripts/FlightBooking.js"></script>
+
+<br />
+
+<style>
+    a:hover {
+        text-decoration: none;
+    }
+
+    .records-info-wrap .riw-item {
+        width: 33%;
+        padding: 10px 20px;
+        background-color: #3494aa;
+        float: left;
+    }
+
+    .riw-item a, .riw-item span {
+        color: #fff;
+    }
+
+        .riw-item span.riw-top {
+            font-size: 31px;
+            font-weight: 700;
+        }
+
+        .riw-item span.riw-middle {
+            font-size: 19px;
+            text-transform: uppercase;
+        }
+
+        .riw-item span.riw-bottom {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+    .riw-item span {
+        display: block;
+        text-align: center;
+    }
+
+    .records-info-wrap .riw-item:nth-child(2) {
+        background-color: #2e8497;
+    }
+
+    .records-info-wrap .riw-item:nth-child(3) {
+        background-color: #297284;
+    }
+
+    .records-info-wrap .riw-item:nth-child(4) {
+        background-color: #226474;
+    }
+
+    .riw-item:hover {
+        background-color: #43b8d4 !important;
+    }
+
+    .riw-item {
+        -webkit-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    <div class="container" id="divSelection">
+        <p>@Html.Label("From :") <strong>@Html.DisplayFor(model => model.flightDetail.DepartureVenue)</strong></p>
+        <p>@Html.Label("To :") <strong>@Html.DisplayFor(model => model.flightDetail.DestinationVenue)</strong></p>
+        <p>@Html.Label("Departure Date & Time :") <strong>@Html.DisplayFor(model => model.flightDetail.DepartureDateTime)</strong></p>
+        <p>@Html.Label("Arrival Date & Time :") <strong>@Html.DisplayFor(model => model.flightDetail.ArrivalDateTime)</strong></p>
+        @Html.HiddenFor(model => model.flightID)
+        <div class="container-fluid">
+            <div class="col-md-12">
+                <div class="records-info-wrap clearfix">
+                    <div class="riw-item">
+                        <a>
+                            <span class="riw-top">First Class <br />(1 - 18)</span>
+                            @foreach (var item in Model.firstClassPriceList)
+                            {
+                                <span class="riw-middle">@Html.DisplayFor(modelItem => item.AgeCategory) - RM @Html.DisplayFor(modelItem => item.Price)</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="riw-item">
+                        <a>
+                            <span class="riw-top">Business Class <br />(19 - 60)</span>
+                            @foreach (var item in Model.businessClassPriceList)
+                            {
+                                <span class="riw-middle">@Html.DisplayFor(modelItem => item.AgeCategory) - RM @Html.DisplayFor(modelItem => item.Price)</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="riw-item">
+                        <a>
+                            <span class="riw-top">Economy Class <br /> (61 - 180)</span>
+                            @foreach (var item in Model.economyClassPriceList)
+                            {
+                                <span class="riw-middle">@Html.DisplayFor(modelItem => item.AgeCategory) - RM @Html.DisplayFor(modelItem => item.Price)</span>
+                            }
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2> Choose seats by clicking the corresponding seat in the layout below:</h2>
+        <div id="holder">
+            <ul id="place"></ul>
+        </div>
+        <div style="float:left; margin-top:5px;">
+            <ul id="seatDescription">
+                <li style="background:url('/Images/available_seat_img.gif') no-repeat scroll 0 0 transparent;">Available Seat</li>
+                <li style="background:url('/Images/booked_seat_img.gif') no-repeat scroll 0 0 transparent;">Booked Seat</li>
+                <li style="background:url('/Images/selected_seat_img.gif') no-repeat scroll 0 0 transparent;">Selected Seat</li>
+            </ul>
+        </div>
+        <br />
+        @Html.Hidden("SeatsSelected", null, new { name = "SeatsSelected", id = "hdnSeatsSelected" })
+        <div style="clear:both;width:100%">
+            <button type="submit" name="btnProceed" value="Proceed" onclick="return ValidateIsSeatSelected();" class="btn btn-default" style="margin-left:45%;">Select and Proceed</button>
+        </div>
+    </div>
+    <br />
+    if (ViewBag.Disable != null)
+    {
+        <script>
+            $("#divSelection").css("pointer-events","none");
+        </script>
+    }
+
+    if (Model.numberOfSelectedSeats != 0)
+    {
+        <div class="container">
+            <div class="row">
+                <h2 class="text-center">Passengers' Information</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Seat Number</th>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Nationality</th>
+                                <th>Date of Birth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.numberOfSelectedSeats; i++)
+                            {
+                                <tr>
+                                    <td>@Model.bookedSeats[i]</td>
+                                    <td>@Html.TextBox("Name", null, new { id = "txtName", name = "Name" })</td>
+                                    <td>
+                                        @Html.DropDownList("Gender", new SelectList(Enum.GetValues(typeof(Gender))), "Select Gender", new { @class = "form-control" })
+                                    </td>
+                                    <td>@Html.TextBox("Nationality", null, new { id = "txtNationality", name = "nationality", @class = "form-control" })</td>
+                                    <td>@Html.TextBox("DOB", null, new { @class = "form-control datepicker", id = "DOB", placeholder = "Date of Birth", type = "date" })</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br />
+            <div style="clear:both;width:100%">
+                <button type="submit" value="Submit" name="btnSubmit" onclick="return ValidateIsSeatSelected();" class="btn btn-default" style="margin-left:45%;">Submit</button>
+            </div>
+        </div>
+    }
+}
+
+<script>
+        var bookedSeats = [@ViewBag.BookedSeats];
+        var selectedSeats = [@ViewBag.SelectedSeats]
+        init(bookedSeats, selectedSeats);
+
+        $('.' + settings.seatCss).click(function () {
+            if ($(this).hasClass(settings.selectedSeatCss)) {
+                alert('This seat is already reserved');
+            }
+            else {
+                $(this).toggleClass(settings.selectingSeatCss);
+            }
+        });
+
+        $('#btnShow').click(function () {
+            var str = [];
+            $.each($('#place li.' + settings.selectedSeatCss + ' a, #place li.' + settings.selectingSeatCss + ' a'), function (index, value) {
+                str.push($(this).attr('title'));
+            });
+            alert(str.join(','));
+        })
+
+        $('#btnShowNew').click(function () {
+            var str = [], item;
+            $.each($('#place li.' + settings.selectingSeatCss + ' a'), function (index, value) {
+                item = $(this).attr('title');
+                str.push(item);
+            });
+            alert(str.join(','));
+        })
+</script>
