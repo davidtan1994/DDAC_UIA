@@ -57,6 +57,7 @@ namespace UIA_Flight_Booking_System.Controllers
             return View(model);
         }
 
+        [Authorize(Roles ="Customer")]
         public ActionResult FlightBooking(Guid flightID)
         {
             FlightBookingViewModel model = new FlightBookingViewModel();
@@ -82,6 +83,8 @@ namespace UIA_Flight_Booking_System.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Customer")]
         public ActionResult FlightBooking(FlightBookingViewModel model, string[] Name, string[] Gender, string[] Nationality, string[] DOB, string btnProceed, string btnSubmit)
         {
             string seats = Request.Form["SeatsSelected"];
